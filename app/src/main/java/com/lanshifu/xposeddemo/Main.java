@@ -43,28 +43,33 @@ public class Main implements IXposedHookLoadPackage {
 
 	@Override
 	public void handleLoadPackage(final LoadPackageParam param) throws Throwable{
-		//通过反射实现热更新
-		final String packageName = Module.class.getPackage().getName();
-		String filePath = String.format("/data/app/%s-%s.apk", packageName, 1);
-		if (!new File(filePath).exists()) {
-			filePath = String.format("/data/app/%s-%s.apk", packageName, 2);
+		if (Config.isDebug){
+			//通过反射实现热更新
+			final String packageName = Module.class.getPackage().getName();
+			String filePath = String.format("/data/app/%s-%s.apk", packageName, 1);
 			if (!new File(filePath).exists()) {
-				filePath = String.format("/data/app/%s-%s/base.apk", packageName, 1);
+				filePath = String.format("/data/app/%s-%s.apk", packageName, 2);
 				if (!new File(filePath).exists()) {
-					filePath = String.format("/data/app/%s-%s/base.apk", packageName, 2);
+					filePath = String.format("/data/app/%s-%s/base.apk", packageName, 1);
 					if (!new File(filePath).exists()) {
-						XposedBridge.log("Error:在/data/app找不到APK文件" + packageName);
-						return;
+						filePath = String.format("/data/app/%s-%s/base.apk", packageName, 2);
+						if (!new File(filePath).exists()) {
+							XposedBridge.log("Error:在/data/app找不到APK文件" + packageName);
+							return;
+						}
 					}
 				}
 			}
-		}
-		final PathClassLoader pathClassLoader = new PathClassLoader(filePath, ClassLoader.getSystemClassLoader());
-		final Class<?> aClass = Class.forName(packageName + "." + Module.class.getSimpleName(), true, pathClassLoader);
-		final Method aClassMethod = aClass.getMethod("handleMyHandleLoadPackage", XC_LoadPackage.LoadPackageParam.class);
-		aClassMethod.invoke(aClass.newInstance(), param);
+			final PathClassLoader pathClassLoader = new PathClassLoader(filePath, ClassLoader.getSystemClassLoader());
+			final Class<?> aClass = Class.forName(packageName + "." + Module.class.getSimpleName(), true, pathClassLoader);
+			final Method aClassMethod = aClass.getMethod("handleMyHandleLoadPackage", XC_LoadPackage.LoadPackageParam.class);
+			aClassMethod.invoke(aClass.newInstance(), param);
 
-		xLog("pkg:"+param.packageName);
+			xLog("pkg:"+param.packageName);
+		}else {
+//			Module.
+		}
+
 
 
 	}
