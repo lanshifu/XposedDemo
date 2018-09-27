@@ -1,5 +1,7 @@
 package com.lanshifu.xposeddemo;
 
+import android.util.Log;
+
 import java.io.File;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -17,6 +19,7 @@ public class Main implements IXposedHookLoadPackage {
 
 	private static String MODULE_PATH = null;
 
+	private static final String TAG = "lxb";
 
 	private void hook_method(String className, ClassLoader classLoader, String methodName,
 			Object... parameterTypesAndCallback){
@@ -43,7 +46,7 @@ public class Main implements IXposedHookLoadPackage {
 
 	@Override
 	public void handleLoadPackage(final LoadPackageParam param) throws Throwable{
-		if (Config.isDebug){
+		if (BuildConfig.DEBUG){
 			//通过反射实现热更新
 			final String packageName = Module.class.getPackage().getName();
 			String filePath = String.format("/data/app/%s-%s.apk", packageName, 1);
@@ -54,7 +57,7 @@ public class Main implements IXposedHookLoadPackage {
 					if (!new File(filePath).exists()) {
 						filePath = String.format("/data/app/%s-%s/base.apk", packageName, 2);
 						if (!new File(filePath).exists()) {
-							XposedBridge.log("Error:在/data/app找不到APK文件" + packageName);
+							XposedBridge.log("lxb-Error:在/data/app找不到APK文件" + packageName);
 							return;
 						}
 					}
@@ -67,8 +70,14 @@ public class Main implements IXposedHookLoadPackage {
 
 			xLog("pkg:"+param.packageName);
 		}else {
-//			Module.
-		}
+			Log.d(TAG, "not hot fix - >handleLoadPackage: ");
+			Module module = new Module();
+            try {
+                module.handleMyHandleLoadPackage(param);
+            } catch (ClassNotFoundException e) {
+                Log.e(TAG, "handleLoadPackage: "+ e.getMessage());
+            }
+        }
 
 
 
@@ -76,9 +85,10 @@ public class Main implements IXposedHookLoadPackage {
 
 
 	private void xLog(String content) {
-		XposedBridge.log("*******************************************************************************************************************************");
+        Log.d("lxb", "xLog: " +content);
+		XposedBridge.log("lxb*******************************************************************************************************************************");
 		XposedBridge.log(content);
-		XposedBridge.log("----------------------------------------------------------------------------------------------------------------------");
+		XposedBridge.log("lxb----------------------------------------------------------------------------------------------------------------------");
 	}
 
 }

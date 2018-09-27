@@ -6,5 +6,10 @@ package com.lanshifu.xposeddemo;
 
 public class Config {
 
-    public static final boolean isDebug = true;
+    public static boolean isDebug = true;
+
+    /**
+     * 蚂蚁森林
+     */
+    public static boolean isMayiSenlinOpen = true;
 }
