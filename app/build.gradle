@@ -6,16 +6,43 @@ android {
     defaultConfig {
         applicationId "com.lanshifu.xposeddemo"
         minSdkVersion 15
-        targetSdkVersion 27
+        targetSdkVersion 22
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
-            minifyEnabled false
+//            minifyEnabled true
+//            shrinkResources true
+//            zipAlignEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+
+    signingConfigs {
+//        debug {
+//            keyAlias '123456'
+//            keyPassword '123456'
+//            storeFile file("../key.jks")//这里我放在project根目录下，根据路径配置
+//            storePassword '123456'
+//        }
+        release {
+            keyAlias '123456'
+            keyPassword '123456'
+            storeFile file("../key")
+            storePassword '123456'
+        }
+    }
+
+    dexOptions {
+        preDexLibraries = false
+    }
+
+    lintOptions {
+        disable 'InvalidPackage'
+        disable "ResourceType"
+        abortOnError false
     }
 }
 
@@ -27,4 +54,6 @@ dependencies {
     compile 'com.android.support:appcompat-v7:26.0.0-alpha1'
     testCompile 'junit:junit:4.12'
     provided 'de.robv.android.xposed:api:82'
+
+    api 'com.google.code.gson:gson:2.8.2'
 }

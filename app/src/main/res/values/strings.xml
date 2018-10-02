@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">XposedDemo</string>
+    <string name="app_name">蓝师傅xposed</string>
+    <string name="desc">支持支付宝版本：10.1.32、10.1.33</string>
 </resources>

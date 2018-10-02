@@ -23,3 +23,6 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+ #实体类不参与混淆
+-keep class com.lanshifu.xposeddemo.bean.** { *; }
+-keep class com.lanshifu.xposeddemo.ui.** { *; }

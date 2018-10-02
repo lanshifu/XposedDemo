@@ -3,13 +3,14 @@ package com.lanshifu.xposeddemo;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Handler;
-import android.text.TextUtils;
 import android.util.Log;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import java.lang.reflect.Field;
+import com.lanshifu.xposeddemo.utils.AliUtil;
+import com.lanshifu.xposeddemo.utils.LogUtil;
+import com.lanshifu.xposeddemo.utils.PreferenceUtils;
+
+import java.lang.reflect.Method;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XC_MethodReplacement;
@@ -25,6 +26,7 @@ public class Module {
 
     private static final int ID_SETTING = 10;
     private static final String TAG = "lxb";
+
 
     private void hook_method(String className, ClassLoader classLoader, String methodName,
                              Object... parameterTypesAndCallback) {
@@ -43,188 +45,215 @@ public class Module {
      */
     public void handleMyHandleLoadPackage(final XC_LoadPackage.LoadPackageParam param) throws ClassNotFoundException {
 
-        ClassLoader loader = param.classLoader;
+        final ClassLoader loader = param.classLoader;
 
         xLog("handleMyHandleLoadPackage packageName = " + param.packageName);
 
-//        hook_method("com.lanshifu.myapp_3.MainActivity", param.classLoader, "getCount", new XC_MethodHook() {
-//            @Override
-//            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-//                param.setResult(11);
-//            }
-//        });
-//
-//        hook_method("com.lanshifu.baselibrary_master.ui.SecondActivity", param.classLoader, "onPrepareOptionsMenu", Menu.class, new XC_MethodHook() {
-//            @Override
-//            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-//                Activity activity = (Activity) param.thisObject;
-//                Menu menu = (Menu) param.args[0];
-//                menu.add(Menu.NONE, 0, ID_SETTING, "设置hook");
-//                xLog("hook 更多菜单");
-//            }
-//        });
-//
-//
-//        hook_method("com.lanshifu.baselibrary_master.ui.SecondActivity", param.classLoader, "onOptionsItemSelected", MenuItem.class, new XC_MethodHook() {
-//            @Override
-//            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-//                MenuItem menuItem = (MenuItem) param.args[0];
-//                if (menuItem.getItemId() == ID_SETTING){
-//                    Context context = (Context) param.thisObject;
-//                    ToastUtil.showShortToast(context,"点击了设置");
-//                    xLog("点击了 hook 更多菜单");
-//                }
-//            }
-//        });
 
         if (param.packageName.equals("com.lanshifu.xposeddemo")) {
-            hook_method("com.lanshifu.xposeddemo.MainActivity", param.classLoader, "getResult", new XC_MethodHook() {
+            hook_method("com.lanshifu.xposeddemo.ui.MainActivity", param.classLoader, "isOpen", new XC_MethodHook() {
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                     Log.d("lxb", "hookMainActivity -- >initView");
-                    param.setResult("已启动，不需要重启手机");
-                    Toast.makeText((Context) param.thisObject, "你在看什么xposeddemo1234", Toast.LENGTH_SHORT).show();
+                    param.setResult(true);
+
+                    Toast.makeText((Context) param.thisObject, "模块已经启动", Toast.LENGTH_SHORT).show();
                 }
             });
         }
 
-//        if (param.packageName.equals("com.lanshifu.baselibrary_master")) {
-//            hook_method("com.lanshifu.baselibrary_master.ui.MainActivity", param.classLoader,
-//                    "initView", new XC_MethodHook() {
-//                        @Override
-//                        protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-//                            Log.d("lxb", "hookMainActivity -- >initView");
-//                            Toast.makeText((Context) param.thisObject, "你在看什么MainActivity", Toast.LENGTH_SHORT).show();
-//                        }
-//                    });
-//
-//            hook_method("com.lanshifu.baselibrary_master.ui.SecondActivity", param.classLoader,
-//                    "initView", new XC_MethodHook() {
-//                        @Override
-//                        protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-//                            Log.d("lxb", "hookMainActivity -- >initView");
-//                            Toast.makeText((Context) param.thisObject, "你在看什么SecondActivity", Toast.LENGTH_SHORT).show();
-//                        }
-//                    });
-//        }
-//
-//
-//        if (param.packageName.equals("me.jessyan.armscomponent.app")) {
-//            hook_method("me.jessyan.armscomponent.zhihu.mvp.ui.activity.ZhihuHomeActivity", param.classLoader,
-//                    "initView", Bundle.class, new XC_MethodHook() {
-//                        @Override
-//                        protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-//                            Log.d("lxb", "hookMvpArm -- >ZhihuHomeActivity");
-//                            Toast.makeText((Context) param.thisObject, "你在看什么ZhihuHomeActivity", Toast.LENGTH_SHORT).show();
-//                        }
-//                    });
-//        }
+
+        if (param.packageName.equals("com.eg.android.AlipayGphone") && Config.isMayiSenlinOpen) {
+            Log.d("lxb", "支付宝开关打开222");
 
 
-        if (Config.isMayiSenlinOpen ) {
-            Log.d("lxb", "支付宝开关打开");
-            Class ci = loader.loadClass("com.alipay.mobile.base.security.CI");
-            if (ci != null){
-                XposedHelpers.findAndHookMethod(ci, "a", ci, Activity.class, new XC_MethodReplacement() {
-                    @Override
-                    protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
-                        xLog("replaceHookedMethod,show dialog");
-                        return null;
-                    }
-                });
-            }else {
-                xLog("ci == null");
+            try {
+                Class ci = loader.loadClass("com.alipay.mobile.base.security.CI");
+                if (ci != null) {
+                    XposedHelpers.findAndHookMethod(ci, "a", ci, Activity.class, new XC_MethodReplacement() {
+                        @Override
+                        protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
+                            xLog("replaceHookedMethod,show dialog");
+                            return null;
+                        }
+                    });
+                } else {
+                    xLog("ci == null");
+                }
+            } catch (ClassNotFoundException e) {
+                Log.e(TAG, "loadClass CI error: " + e.getMessage());
             }
 
-            Log.d("lxb", "支付宝:H5Log");
-
-            Class h5Log = loader.loadClass("com.alipay.mobile.nebula.util.H5Log");
-            xLog("H5Log == null ? :" +(h5Log == null));
-            if (h5Log != null){
-                hook_method("com.alipay.mobile.nebula.util.H5Log", loader, "d", String.class,
-                        String.class, new XC_MethodHook() {
-                            @Override
-                            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                                super.beforeHookedMethod(param);
-                                Log.d("lxb-hook日志",param.args[0] + ":" + param.args[1]);
 
 
-                            }
+            Log.d("lxb", "goto:H5FragmentManager ");
+            //我们利用之前分析的那几个类关系，保存当前的 H5Fragment
+            //这块没有分析代码
+            try {
+                Class clazz = loader.loadClass("com.alipay.mobile.nebulacore.ui.H5FragmentManager");
+                if (clazz != null) {
+                    LogUtil.d("H5FragmentManager != null");
+                    Class<?> h5FragmentClazz = loader.loadClass("com.alipay.mobile.nebulacore.ui.H5Fragment");
+                    if (h5FragmentClazz != null) {
+                        XposedHelpers.findAndHookMethod(clazz, "pushFragment", h5FragmentClazz,
+                                boolean.class, Bundle.class, boolean.class, boolean.class, new XC_MethodHook() {
+                                    @Override
+                                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
 
-                        });
+                                        super.afterHookedMethod(param);
+                                        LogUtil.d("fragment,cur fragment = " + param.args[0]);
+
+//                                        loader.loadClass("com.alipay.mobile.nebulacore.ui")
+
+                                        AliUtil.curH5Fragment = param.args[0];
+
+                                    }
+                                });
+                    }
+                }
+
+            } catch (Exception e) {
+                LogUtil.e("H5Fragment error" + e.getMessage());
+            }
+
+
+            Log.d("lxb", "goto:H5Log ");
+            try {
+                Class h5Log = loader.loadClass("com.alipay.mobile.nebula.util.H5Log");
+                xLog("H5Log == null ? :" + (h5Log == null));
+                if (h5Log != null) {
+                    hook_method("com.alipay.mobile.nebula.util.H5Log", loader, "d", String.class,
+                            String.class, new XC_MethodHook() {
+                                @Override
+                                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                                    super.beforeHookedMethod(param);
+
+                                    if (PreferenceUtils.isZhifubaoOpen()){
+                                        xLog("H5Log  "+param.args[0] + ":" + param.args[1]);
+                                    }
+
+
+                                }
+
+                            });
+                }
+            } catch (ClassNotFoundException e) {
+                Log.e(TAG, "loadClass:H5Log error " + e.getMessage());
             }
 
 
             Class<?> clazz = null;
             try {
-                clazz = loader.loadClass("com.alipay.mobile.nebulabiz.rpc.H5RpcUil");
+                // com.alipay.mobile.nebulabiz.rpc
+                Log.d(TAG, "goto H5RpcUtil");
+
+
+
+                clazz = loader.loadClass("com.alipay.mobile.nebulabiz.rpc.H5RpcUtil");
                 if (clazz != null) {
-                    xLog("H5RpcUil != null");
+                    xLog("H5RpcUtil != null");
                     Class<?> h5PageClazz = loader.loadClass("com.alipay.mobile.h5container.api.H5Page");
                     Class<?> jsonClazz = loader.loadClass("com.alibaba.fastjson.JSONObject");
                     Log.d("lxb", "h5PageClazz == null:" + (h5PageClazz == null));
                     Log.d("lxb", "jsonClazz == null:" + (jsonClazz == null));
                     if (h5PageClazz != null && jsonClazz != null) {
-                        // TODO: 2018\9\10 0010
+                        Log.d(TAG, "h5PageClazz != null && jsonClazz != null: ");
+                        XposedHelpers.findAndHookMethod(clazz, "rpcCall", String.class, String.class,
+                                String.class, boolean.class, jsonClazz, String.class, boolean.class, h5PageClazz,
+                                int.class, String.class, boolean.class, int.class, new XC_MethodHook() {
+                                    @Override
+                                    protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                                        super.beforeHookedMethod(param);
+                                        if (!PreferenceUtils.isZhifubaoOpen()){
+                                            return;
+                                        }
+                                        Log.d(TAG, "rpcCall: params:" + param.args[0] + "," +
+                                                param.args[1] + "," + param.args[2] + "," +
+                                                param.args[3] + "," + param.args[4] + "," +
+                                                param.args[5] + "," + param.args[6] + "," +
+                                                param.args[7] + "," + param.args[8] + "," +
+                                                param.args[9] + "," + param.args[10] + "," +
+                                                param.args[11]
+                                        );
+                                        Log.d(TAG, "rpcCall result: " + param.getResult());
+                                        Log.d(TAG, "rpcCall obj2: " + param.thisObject);
+
+                                    }
+
+                                    @Override
+                                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                                        super.afterHookedMethod(param);
+                                        Object resp = param.getResult();
+                                        xLog("afterHookedMethod rpcCall");
+
+                                        if (!PreferenceUtils.isZhifubaoOpen()){
+                                            return;
+                                        }
+                                        if (resp != null) {
+                                            Method method = resp.getClass().getMethod("getResponse", new Class<?>[]{});
+                                            String response = (String) method.invoke(resp, new Object[]{});
+                                            xLog("response =" + response);
+
+
+                                            //解析好友信息
+                                            if (AliUtil.isBankList(response)) {
+                                                xLog("解析好友信息数据");
+                                                AliUtil.autoGetCanCollectUserIdList(loader, response);
+                                            }
+
+                                            //第一次是自己的能量，比上面获取用户信息消息还要早，所以这里需要记录当前自己的
+                                            //userId值
+                                            if (AliUtil.isUserDetail(response)) {
+                                                LogUtil.d("解析好友能力详情信息");
+                                                AliUtil.autoGetCanCollectBubbleIdList(loader, response);
+
+                                            }
+
+                                            if (AliUtil.isCollectResult(response)) {
+                                                //计算收集了多少能量
+                                                AliUtil.calcuCollectionResult(response);
+                                            }
+
+
+                                        } else {
+                                            xLog("resp == null");
+                                        }
+                                    }
+                                });
+
+
                     } else {
-                        // TODO: 2018\9\10 0010
+                        Log.d(TAG, "else");
                     }
                 } else {
-                    xLog("H5RpcUil == null");
+                    xLog("H5RpcUtil == null");
                 }
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
-                xLog("error " + e.getMessage());
+                xLog("H5RpcUtil error " + e.getMessage());
+            }
+
+            Log.d("lxb", "goto:H5Activity ");
+            try {
+                Class h5FragmentClazz = loader.loadClass("com.alipay.mobile.nebulacore.ui.H5Activity");
+                if (h5FragmentClazz != null){
+                    XposedHelpers.findAndHookMethod(h5FragmentClazz, "onActivityCreated", new XC_MethodHook() {
+                        @Override
+                        protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                            super.afterHookedMethod(param);
+                            Log.d(TAG, "hook H5Activity onAttach: 保存 activity");
+
+                            AliUtil.activity = param.args[0];
+                        }
+                    });
+                }
+
+            } catch (Exception e) {
+                LogUtil.e("hook H5Activity onAttach 失败 " + e.getMessage());
             }
 
 
         }
-
-        /**
-         * 网易云跳过首页广告
-         */
-//        if (param.packageName.equals("com.netease.cloudmusic")) {
-//            Log.d(TAG, "hook cloudmusic: ");
-//            final Class<?> aClass = XposedHelpers.findClassIfExists("com.netease.cloudmusic.fragment.ay", param.classLoader);
-//            if (aClass == null) {
-//                return;
-//            }
-//            final Field field = XposedHelpers.findField(aClass, "b");
-//            final Field field_handler = XposedHelpers.findField(aClass, "p");
-//            if (field == null && field_handler != null) {
-//                return;
-//            }
-//            field.setAccessible(true);
-//            hook_method("com.netease.cloudmusic.fragment.ay", param.classLoader,
-//                    "onResume", new XC_MethodHook() {
-//                        @Override
-//                        protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-//                            Log.d("lxb", "hook-wangyiyun");
-//                            final TextView tv_pass = (TextView) field.get(param.thisObject);
-//                            final Handler handler = (Handler) field_handler.get(param.thisObject);
-//                            if (tv_pass != null) {
-//                                if (TextUtils.isEmpty(tv_pass.getText())) {
-//                                    handler.postDelayed(new Runnable() {
-//                                        @Override
-//                                        public void run() {
-//                                            tv_pass.setClickable(true);
-//                                            boolean performClick = tv_pass.performClick();
-//                                            Log.d(TAG, "run: tv_pass.clickable delay" + tv_pass.isClickable());
-//                                            Log.d(TAG, "handler-performClick delay: " + performClick + ",text=" + tv_pass.getText());
-//                                        }
-//                                    }, 1000);
-//
-//                                    return;
-//                                }
-//                                boolean performClick = tv_pass.performClick();
-//                                Log.d(TAG, "run: tv_pass.clickable " + tv_pass.isClickable());
-//                                Log.d(TAG, "handler-performClick: " + performClick + ",text=" + tv_pass.getText());
-//                            }
-//
-//                        }
-//                    });
-//
-//        }
 
     }
 
@@ -232,6 +261,9 @@ public class Module {
         XposedBridge.log("lxb*******************************************************************************************************************************");
         XposedBridge.log(content);
         XposedBridge.log("lxb----------------------------------------------------------------------------------------------------------------------");
-        Log.d("lxb", content);
+
+        if (BuildConfig.DEBUG){
+            Log.d("lxb", content);
+        }
     }
 }

@@ -19,7 +19,7 @@ public class Main implements IXposedHookLoadPackage {
 
 	private static String MODULE_PATH = null;
 
-	private static final String TAG = "lxb";
+	public static final String TAG = "lxb";
 
 	private void hook_method(String className, ClassLoader classLoader, String methodName,
 			Object... parameterTypesAndCallback){
@@ -70,7 +70,7 @@ public class Main implements IXposedHookLoadPackage {
 
 			xLog("pkg:"+param.packageName);
 		}else {
-			Log.d(TAG, "not hot fix - >handleLoadPackage: ");
+			Log.d(TAG, "not hot fix - >handleLoadPackage: " + param.packageName);
 			Module module = new Module();
             try {
                 module.handleMyHandleLoadPackage(param);
