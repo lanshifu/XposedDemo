@@ -29,7 +29,8 @@ public class AliUtil {
     // userId 跟 能量id应该绑定，用bean
     static ArrayList<CollectionBean> mCanCollectionIdList = new ArrayList<>();
 
-    static int pageCount = 1;
+    static int pageCount = 0;
+
     public static Object curH5Fragment;
     public static Object curH5PageImpl;
     public static Object curH5WebView;
@@ -107,7 +108,7 @@ public class AliUtil {
             mIsWebViewRefresh = false;
             mCanCollectionIdList.clear();
             mFriendsRankUseridList.clear();
-            pageCount = 1;
+            pageCount = 0;
             LogUtil.d("重置参数");
 
 
@@ -193,7 +194,8 @@ public class AliUtil {
             json.put("av", "5");
             json.put("ct", "android");
             json.put("pageSize", 20);
-            json.put("startPoint", ((++pageCount) * 20 + 1) + "");
+            //从第一页开始加载
+            json.put("startPoint", ((pageCount++) * 20 + 1) + "");
             jsonArray.put(json);
             LogUtil.d("rpcCall_FriendRankList 参数：" + jsonArray);
 
@@ -408,6 +410,7 @@ public class AliUtil {
 
 
     private static void toast(ClassLoader loader,String test){
+
         try {
             Class<?> h5Utils = loader.loadClass("com.alipay.mobile.nebula.util.H5Utils");
             Method getContext = h5Utils.getMethod("getContext");
@@ -424,5 +427,8 @@ public class AliUtil {
         }
     }
 
+
+
+    //stealingAnimal
     
 }

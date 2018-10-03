@@ -66,6 +66,7 @@ public class Module {
         if (param.packageName.equals("com.eg.android.AlipayGphone") && Config.isMayiSenlinOpen) {
             Log.d("lxb", "支付宝开关打开222");
 
+            // Farm
 
             try {
                 Class ci = loader.loadClass("com.alipay.mobile.base.security.CI");
@@ -85,8 +86,6 @@ public class Module {
             }
 
 
-
-            Log.d("lxb", "goto:H5FragmentManager ");
             //我们利用之前分析的那几个类关系，保存当前的 H5Fragment
             //这块没有分析代码
             try {
@@ -102,9 +101,6 @@ public class Module {
 
                                         super.afterHookedMethod(param);
                                         LogUtil.d("fragment,cur fragment = " + param.args[0]);
-
-//                                        loader.loadClass("com.alipay.mobile.nebulacore.ui")
-
                                         AliUtil.curH5Fragment = param.args[0];
 
                                     }
@@ -128,8 +124,8 @@ public class Module {
                                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                                     super.beforeHookedMethod(param);
 
-                                    if (PreferenceUtils.isZhifubaoOpen()){
-                                        xLog("H5Log  "+param.args[0] + ":" + param.args[1]);
+                                    if (PreferenceUtils.isZhifubaoOpen()) {
+                                        xLog("H5Log  " + param.args[0] + ":" + param.args[1]);
                                     }
 
 
@@ -148,7 +144,6 @@ public class Module {
                 Log.d(TAG, "goto H5RpcUtil");
 
 
-
                 clazz = loader.loadClass("com.alipay.mobile.nebulabiz.rpc.H5RpcUtil");
                 if (clazz != null) {
                     xLog("H5RpcUtil != null");
@@ -164,7 +159,7 @@ public class Module {
                                     @Override
                                     protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                                         super.beforeHookedMethod(param);
-                                        if (!PreferenceUtils.isZhifubaoOpen()){
+                                        if (!PreferenceUtils.isZhifubaoOpen()) {
                                             return;
                                         }
                                         Log.d(TAG, "rpcCall: params:" + param.args[0] + "," +
@@ -186,7 +181,7 @@ public class Module {
                                         Object resp = param.getResult();
                                         xLog("afterHookedMethod rpcCall");
 
-                                        if (!PreferenceUtils.isZhifubaoOpen()){
+                                        if (!PreferenceUtils.isZhifubaoOpen()) {
                                             return;
                                         }
                                         if (resp != null) {
@@ -236,7 +231,7 @@ public class Module {
             Log.d("lxb", "goto:H5Activity ");
             try {
                 Class h5FragmentClazz = loader.loadClass("com.alipay.mobile.nebulacore.ui.H5Activity");
-                if (h5FragmentClazz != null){
+                if (h5FragmentClazz != null) {
                     XposedHelpers.findAndHookMethod(h5FragmentClazz, "onActivityCreated", new XC_MethodHook() {
                         @Override
                         protected void afterHookedMethod(MethodHookParam param) throws Throwable {
@@ -262,7 +257,7 @@ public class Module {
         XposedBridge.log(content);
         XposedBridge.log("lxb----------------------------------------------------------------------------------------------------------------------");
 
-        if (BuildConfig.DEBUG){
+        if (BuildConfig.DEBUG) {
             Log.d("lxb", content);
         }
     }
