@@ -1,5 +1,9 @@
 package com.lanshifu.xposeddemo.utils;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
+
 import de.robv.android.xposed.XSharedPreferences;
 
 /**
@@ -13,7 +17,11 @@ public class PreferenceUtils {
     public static final String REPLY_ROBOT ="reply_robot";
     public static final String REPLY_DESCRIBE ="reply_describe";
 
+    //自动收（偷）能量开关
     public static final String ZHIFUBAO_OPEN ="zhifubao_open";
+
+    //自动通知好友驱赶小鸡开关
+    public static final String OPEN_NOTICE_STEAL ="zhifubao_open";
 
     private static XSharedPreferences intance = null;
 
@@ -27,17 +35,20 @@ public class PreferenceUtils {
         return intance;
     }
 
-    public static boolean openAll(){
-        return getIntance().getBoolean(AUTO_ALL,false);
-    }
 
-    public static String replyContent(){
-        return getIntance().getString(REPLY_CONTENT,"请设置自动回复内容");
+    public static void putBool(Context context,String key,boolean val){
+        SharedPreferences mSharedPreferences = context.getSharedPreferences("config", Activity.MODE_WORLD_READABLE);
+        SharedPreferences.Editor   mEditor  = mSharedPreferences.edit();
+        mEditor.putBoolean(PreferenceUtils.ZHIFUBAO_OPEN, val).commit();
     }
 
 
     public static boolean isZhifubaoOpen(){
         return getIntance().getBoolean(ZHIFUBAO_OPEN,true);
+    }
+
+    public static boolean isNoticeStealOpen(){
+        return getIntance().getBoolean(OPEN_NOTICE_STEAL,false);
     }
 
 

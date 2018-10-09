@@ -33,6 +33,18 @@
             android:thumb="@drawable/switch_thumb"
             android:track="@drawable/switch_track" />
 
+        <Switch
+            android:padding="16dp"
+            android:id="@+id/switch_notice_steal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:checked="true"
+            android:text="自动通知好友驱赶小鸡"
+            android:gravity="center_vertical"
+            android:thumb="@drawable/switch_thumb"
+            android:track="@drawable/switch_track" />
+
     </LinearLayout>
 
     <TextView

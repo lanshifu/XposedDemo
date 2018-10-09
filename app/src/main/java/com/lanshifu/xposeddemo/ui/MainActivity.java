@@ -1,15 +1,11 @@
 package com.lanshifu.xposeddemo.ui;
 
-import android.app.Activity;
-import android.content.SharedPreferences;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import com.lanshifu.xposeddemo.Config;
-import com.lanshifu.xposeddemo.Main;
 import com.lanshifu.xposeddemo.R;
 import com.lanshifu.xposeddemo.utils.PreferenceUtils;
 
@@ -30,26 +26,31 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
-        String tag = Main.TAG;
 
         Switch switch_zhifubao= (Switch) findViewById(R.id.switch_zhifubao);
-
-        switch_zhifubao.setChecked(Config.isMayiSenlinOpen);
+        switch_zhifubao.setChecked(PreferenceUtils.isZhifubaoOpen());
         switch_zhifubao.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                Config.isMayiSenlinOpen = b;
 
-                SharedPreferences  mSharedPreferences = getSharedPreferences("config", Activity.MODE_WORLD_READABLE);
-                SharedPreferences.Editor   mEditor  = mSharedPreferences.edit();
-                mEditor.putBoolean(PreferenceUtils.ZHIFUBAO_OPEN, b).commit();
-
-
+                PreferenceUtils.putBool(MainActivity.this,PreferenceUtils.ZHIFUBAO_OPEN,b);
 
 
             }
         });
+
+
+        Switch switch_notice_steal= (Switch) findViewById(R.id.switch_notice_steal);
+        switch_notice_steal.setChecked(PreferenceUtils.isNoticeStealOpen());
+        switch_notice_steal.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                PreferenceUtils.putBool(MainActivity.this,PreferenceUtils.OPEN_NOTICE_STEAL,b);
+
+            }
+        });
     }
+
 
     public String getResult(){
         return "未启动,请勾选框架并请重启";
