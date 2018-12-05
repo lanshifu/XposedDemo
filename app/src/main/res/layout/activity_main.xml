@@ -43,7 +43,8 @@
             android:text="自动通知好友驱赶小鸡"
             android:gravity="center_vertical"
             android:thumb="@drawable/switch_thumb"
-            android:track="@drawable/switch_track" />
+            android:track="@drawable/switch_track"
+            android:visibility="gone"/>
 
     </LinearLayout>
 

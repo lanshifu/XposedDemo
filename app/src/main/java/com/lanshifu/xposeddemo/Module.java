@@ -3,6 +3,7 @@ package com.lanshifu.xposeddemo;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -27,6 +28,7 @@ public class Module {
     private static final int ID_SETTING = 10;
     private static final String TAG = "lxb";
 
+    public static Handler mHandler = new Handler();
 
     private void hook_method(String className, ClassLoader classLoader, String methodName,
                              Object... parameterTypesAndCallback) {
@@ -237,7 +239,6 @@ public class Module {
                         protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                             super.afterHookedMethod(param);
                             Log.d(TAG, "hook H5Activity onAttach: 保存 activity");
-
                             AliUtil.activity = param.args[0];
                         }
                     });

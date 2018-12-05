@@ -44,11 +44,13 @@ public class PreferenceUtils {
 
 
     public static boolean isZhifubaoOpen(){
-        return getIntance().getBoolean(ZHIFUBAO_OPEN,true);
+//        return getIntance().getBoolean(ZHIFUBAO_OPEN,true);
+        return true;
     }
 
     public static boolean isNoticeStealOpen(){
-        return getIntance().getBoolean(OPEN_NOTICE_STEAL,false);
+//        return getIntance().getBoolean(OPEN_NOTICE_STEAL,false);
+        return true;
     }
 
 

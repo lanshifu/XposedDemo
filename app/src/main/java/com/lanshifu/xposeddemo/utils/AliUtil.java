@@ -5,6 +5,7 @@ import android.os.Looper;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.lanshifu.xposeddemo.Module;
 import com.lanshifu.xposeddemo.bean.CollectionBean;
 import com.lanshifu.xposeddemo.bean.CollectionResultBean;
 import com.lanshifu.xposeddemo.bean.FriendDetailBean;
@@ -409,17 +410,21 @@ public class AliUtil {
     }
 
 
-    private static void toast(ClassLoader loader,String test){
+    private static void toast(ClassLoader loader, final String test){
 
         try {
             Class<?> h5Utils = loader.loadClass("com.alipay.mobile.nebula.util.H5Utils");
             Method getContext = h5Utils.getMethod("getContext");
             getContext.setAccessible(true);
-            Object result = getContext.invoke(null);
+            final Object result = getContext.invoke(null);
 
-            Looper.prepare();
-            Toast.makeText((Context)result,test,Toast.LENGTH_LONG).show();
-            Looper.loop();
+            Module.mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText((Context)result,test,Toast.LENGTH_LONG).show();
+                }
+            });
+
 
         } catch (Exception e) {
             e.printStackTrace();
