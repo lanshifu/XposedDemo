@@ -1,12 +1,10 @@
-package com.lanshifu.xposeddemo;
+package com.lanshifu.xposeddemo.module;
 
 import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
-import android.widget.Toast;
 
+import com.lanshifu.xposeddemo.Config;
 import com.lanshifu.xposeddemo.utils.AliUtil;
 import com.lanshifu.xposeddemo.utils.LogUtil;
 import com.lanshifu.xposeddemo.utils.PreferenceUtils;
@@ -15,57 +13,17 @@ import java.lang.reflect.Method;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XC_MethodReplacement;
-import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 
-/**
- * Created by lanxiaobin on 2018/1/29.
- */
+public class AliPayModule extends BaseModule{
 
-public class Module {
+    private static final String TAG = "AliPayModule";
 
-    private static final int ID_SETTING = 10;
-    private static final String TAG = "lxb";
-
-    public static Handler mHandler = new Handler();
-
-    private void hook_method(String className, ClassLoader classLoader, String methodName,
-                             Object... parameterTypesAndCallback) {
-        try {
-            XposedHelpers.findAndHookMethod(className, classLoader, methodName, parameterTypesAndCallback);
-        } catch (Exception e) {
-            XposedBridge.log(e);
-            xLog(e.getMessage());
-        }
-    }
-
-    /**
-     * 入口，通过反射调用
-     *
-     * @param param
-     */
-    public void handleMyHandleLoadPackage(final XC_LoadPackage.LoadPackageParam param) throws ClassNotFoundException {
+    public static void handleMyHandleLoadPackage(final XC_LoadPackage.LoadPackageParam param) throws ClassNotFoundException {
 
         final ClassLoader loader = param.classLoader;
-
-        xLog("handleMyHandleLoadPackage packageName = " + param.packageName);
-
-
-        if (param.packageName.equals("com.lanshifu.xposeddemo")) {
-            hook_method("com.lanshifu.xposeddemo.ui.MainActivity", param.classLoader, "isOpen", new XC_MethodHook() {
-                @Override
-                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    Log.d("lxb", "hookMainActivity -- >initView");
-                    param.setResult(true);
-
-                    Toast.makeText((Context) param.thisObject, "模块已经启动", Toast.LENGTH_SHORT).show();
-                }
-            });
-        }
-
-
-        if (param.packageName.equals("com.eg.android.AlipayGphone") && Config.isMayiSenlinOpen) {
+        if (Config.isMayiSenlinOpen) {
             Log.d("lxb", "支付宝开关打开222");
 
             // Farm
@@ -253,13 +211,4 @@ public class Module {
 
     }
 
-    private void xLog(String content) {
-        XposedBridge.log("lxb*******************************************************************************************************************************");
-        XposedBridge.log(content);
-        XposedBridge.log("lxb----------------------------------------------------------------------------------------------------------------------");
-
-        if (BuildConfig.DEBUG) {
-            Log.d("lxb", content);
-        }
-    }
 }

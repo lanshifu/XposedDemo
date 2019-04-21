@@ -19,7 +19,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp">
+        android:layout_marginTop="16dp"
+        android:visibility="gone">
 
         <Switch
             android:padding="16dp"
@@ -51,8 +52,25 @@
     <TextView
         android:padding="16dp"
         android:id="@+id/tv_desc"
-        android:text="@string/desc"
+        android:text="番茄社区模块  by 蓝师傅 "
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+
+    <TextView
+        android:paddingLeft="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="功能：
+1.去首页广告、
+2.啪啪无限制观看"
+        android:textColor="@color/colorPrimary"/>
+
+
+    <Button
+        android:layout_margin="16dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/btn_join_group"
+        android:text="遇到问题，加入讨论群"/>
 
 </LinearLayout>  

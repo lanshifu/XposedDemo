@@ -1,11 +1,10 @@
 package com.lanshifu.xposeddemo.utils;
 
 import android.content.Context;
-import android.os.Looper;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.lanshifu.xposeddemo.Module;
+import com.lanshifu.xposeddemo.module.MainModule;
 import com.lanshifu.xposeddemo.bean.CollectionBean;
 import com.lanshifu.xposeddemo.bean.CollectionResultBean;
 import com.lanshifu.xposeddemo.bean.FriendDetailBean;
@@ -418,7 +417,7 @@ public class AliUtil {
             getContext.setAccessible(true);
             final Object result = getContext.invoke(null);
 
-            Module.mHandler.post(new Runnable() {
+            MainModule.mHandler.post(new Runnable() {
                 @Override
                 public void run() {
                     Toast.makeText((Context)result,test,Toast.LENGTH_LONG).show();
