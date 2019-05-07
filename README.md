@@ -1,31 +1,28 @@
+本文为纯技术分享，适合对xposed有兴趣的读者，
 
-个人xposed demo 目前实现功能：
-1、支付宝能量自动收取（需要进入蚂蚁森林界面）很久没更新。
-2、番茄模块
-
-
-不知道番茄社区？ 
-
-我不能放链接，不然就是传播那啥了，不知道要判多少年。。。
-
-如果不想看技术分享，只想使用（手机支持xposed），直接跳到文末。
-
-### 前戏
-
-在一个夜黑风高的晚上，我的基友突然给我发了一个叫“番茄社区”的app，这是什么玩意？找了一张可以上墙的图
-
-![image.png](https://upload-images.jianshu.io/upload_images/11562793-5e97a39c54a18422.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/200)
+如果对xposed不感兴趣，请点击左上角返回按钮~
 
 
-我凑，是个美女直播软件，迫不及待的我，一阵点点点，发现最亮点的功能是第二个tab页，依然找了一张可以上墙的图...
-![](https://upload-images.jianshu.io/upload_images/11562793-9ecb44bbe3ca79c5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/200)
+### 前言
+
+在一个夜黑风高的晚上，我的基友突然给我发了一个叫“🍅社区”的app，这是什么玩意？找了一张可以上墙的图
+
+
+![image.png](https://upload-images.jianshu.io/upload_images/11562793-14cd981a8e688ff0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/200)
+
+
+
+我凑，是个美女直播软件，迫不及待的我，一阵点点点，发现最亮点的功能是第二个tab页，是类似抖音的短视频，找了一张正经的图，抖音都没这么正经吧。。。
+
+![](https://upload-images.jianshu.io/upload_images/11562793-78389e47fa67e29a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/200)
+
 
 
 
 我去，做的效果跟抖音一毛一样，上下滑动切换视频，聊这个，那我可不困了，在滑动了差不多20个视频之后，出现了这个
 ![image.png](https://upload-images.jianshu.io/upload_images/11562793-f15d2f69cf849da0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/200)
 
-卧槽，这能忍，作为一个Android开发攻城狮，充值是不可能充值的。太晚了，打算明天再修理它。
+卧槽，这能忍，作为一个Android开发攻城狮，充值是不可能充值的。太晚了，打算明天再破解它的收费功能。
 
 
 于是，第二天很早就起床打开电脑，这篇文章就开始了...
@@ -195,6 +192,8 @@ public static void hookClassLoader(final XC_LoadPackage.LoadPackageParam loadPac
 
 然后安装试了一下，卧槽，真的无限制观看了，我是V8?
 
+确实成功了，效果图就不发了，大家可以动手试试。
+
 ---
 
 另外，跳过首页广告和打开日志的hook点我也很快找到了
@@ -263,19 +262,15 @@ public static void hookClassLoader(final XC_LoadPackage.LoadPackageParam loadPac
 不是很难找，这里就留给大家自己去实践学习了。
 
 ---
-注意：不管番茄社区后期是否停止服务（你懂的），本文只是技术分享，不涉及利益关系。
+注意：不管🍅社区后期是否停止服务（你懂的），本文只是xposed技术分享，拒绝黄赌毒，源码已开源。
 
-本文技术相关的链接（手机已经能正常使用xposed）
-1、🍅下载：
-2、🍅社区无限制观看papa模块
-3、学习源码请移步github，欢迎star（[https://github.com/lanshifu/XposedDemo](https://github.com/lanshifu/XposedDemo)
-）
+源码学习：[点这里](https://github.com/lanshifu/XposedDemo) 
 
-呀，🍅不方便放链接，到群自取，你想要的群里都有，后期番茄版本更新，xposed模块估计也会再群里进行更新。  
+另外，对于伸手党，已经编译好的xposed模块放群里了，感兴趣的可以到群里下载
 
 番茄模块交流群： 
 
-![](https://upload-images.jianshu.io/upload_images/11562793-44ac17945f6ef5c7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/200)
+![](https://upload-images.jianshu.io/upload_images/11562793-44ac17945f6ef5c7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/100)
 
 
 
