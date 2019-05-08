@@ -67,7 +67,7 @@ public class TomatoModule extends BaseModule{
                 Method[] methods = aClass.getDeclaredMethods();
                 for (Method method : methods) {
 
-                    LogUtil.d(method.getName());
+//                    LogUtil.d(method.getName());
                     if (method.getName().equals("z")){
                         LogUtil.d("自动跳过广告页");
                         method.setAccessible(true);
@@ -75,6 +75,7 @@ public class TomatoModule extends BaseModule{
 
                     }
                 }
+
 
                 Toast.makeText((Context) param.thisObject, "xposed并跳过广告，功能正常", Toast.LENGTH_SHORT).show();
 
@@ -96,6 +97,7 @@ public class TomatoModule extends BaseModule{
                 LogUtil.d(object.toString());
                 Class<?> aClass = object.getClass();
                 Method[] methods = aClass.getDeclaredMethods();
+                LogUtil.d("beforeHookedMethod LogUtil.a");
                 for (Method method : methods) {
                     LogUtil.d(method.getName());
                     if (method.getName().equals("a")){
@@ -127,7 +129,7 @@ public class TomatoModule extends BaseModule{
 
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                LogUtil.d(TAG,"afterHookedMethod 视频次数返回 0 ");
+                LogUtil.d(TAG,"afterHookedMethod 视频次数返回 -  " + param.getResult());
                 param.setResult(0);
 
 

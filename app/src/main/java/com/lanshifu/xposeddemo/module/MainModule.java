@@ -26,7 +26,7 @@ public class MainModule extends BaseModule{
      *
      * @param param
      */
-    public static void handleMyHandleLoadPackage(final XC_LoadPackage.LoadPackageParam param) throws ClassNotFoundException {
+    public void handle(final XC_LoadPackage.LoadPackageParam param) throws ClassNotFoundException {
 
         LogUtil.d(" handle packageName = " + param.packageName);
 
