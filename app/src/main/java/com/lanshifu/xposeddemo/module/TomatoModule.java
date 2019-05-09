@@ -40,6 +40,7 @@ public class TomatoModule extends BaseModule{
 
                                 hookVideoCount(loadPackageParam, classLoader);
 
+                                hookVideoCountUtil(loadPackageParam, classLoader);
 
                             }
 
@@ -131,6 +132,29 @@ public class TomatoModule extends BaseModule{
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 LogUtil.d(TAG,"afterHookedMethod 视频次数返回 -  " + param.getResult());
                 param.setResult(0);
+
+
+            }
+        });
+    }
+
+    //播放数总返回0，无限制观看
+    private static void hookVideoCountUtil(XC_LoadPackage.LoadPackageParam param, ClassLoader loader){
+        //剩余播放次数
+        hook_method("com.one.tomato.utils.VideoPlayCountUtils", loader, "b", new XC_MethodHook() {
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                LogUtil.d(TAG,"afterHookedMethod VideoPlayCountUtils.b --- " + param.getResult());
+                param.setResult(1000);
+            }
+        });
+
+        //总的可以播放次数
+        hook_method("com.one.tomato.utils.VideoPlayCountUtils", loader, "c", new XC_MethodHook() {
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                LogUtil.d(TAG,"afterHookedMethod VideoPlayCountUtils.c --- " + param.getResult());
+                param.setResult(1000);
 
 
             }
