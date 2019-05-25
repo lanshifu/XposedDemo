@@ -11,17 +11,17 @@ import de.robv.android.xposed.XposedBridge;
 public class LogUtil {
 
     public static void d(String tag,String content){
+        Log.d("lxb-xposed->" + tag, content);
         XposedBridge.log("lxb******************************");
         XposedBridge.log(content);
         XposedBridge.log("lxb------------------------------");
-        Log.d("lxb-xposed->" + tag, content);
     }
 
     public static void d(String content){
+        Log.d("lxb-xposed->", content);
         XposedBridge.log("lxb******************************");
         XposedBridge.log(content);
         XposedBridge.log("lxb------------------------------");
-        Log.d("lxb-xposed->", content);
     }
 
     public static void e(String content){

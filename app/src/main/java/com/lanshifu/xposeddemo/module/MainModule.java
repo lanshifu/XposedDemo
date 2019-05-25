@@ -39,8 +39,11 @@ public class MainModule extends BaseModule {
             });
         }
 
+        JianShuModule.handleLoadPackage(param);
+
         //番茄开始
         TomatoModule.hookClassLoader(param);
+
 
         //支付宝偷能量开始
 //        AliPayModule.handle(param);

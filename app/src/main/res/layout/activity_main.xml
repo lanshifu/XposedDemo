@@ -60,10 +60,12 @@
         android:paddingLeft="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="功能：
-1.去首页广告、
-2.啪啪无限制观看、
-3.破解'我的'界面播放次数"
+        android:text="功能：\n
+1.番茄首页广告、\n
+2.啪啪无限制观看、\n
+3.破解'我的'界面播放次数显示\n\n
+4.跳过简书广告\n
+"
         android:textColor="@color/colorPrimary"/>
 
 
