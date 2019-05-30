@@ -10,6 +10,7 @@ import java.lang.reflect.Method;
 
 import dalvik.system.PathClassLoader;
 import de.robv.android.xposed.IXposedHookLoadPackage;
+import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import de.robv.android.xposed.callbacks.XC_LoadPackage.LoadPackageParam;
 
@@ -18,67 +19,44 @@ public class Main implements IXposedHookLoadPackage {
 
 
 	public static final String TAG = "lxb";
-	private String mApkFilePath = null;
-	private String mPackageName = "com.lanshifu.xposeddemo";
 
 
 	@Override
 	public void handleLoadPackage(final LoadPackageParam param) throws Throwable{
-		//debug模式下才使用热更新，因为涉及到反射，影响性能
 		if (BuildConfig.DEBUG){
-			debugHook(param);
-		}else {
-			releaseHook(param);
-        }
-	}
-
-	private void debugHook(final LoadPackageParam param){
-
-		//查找apk路径
-		if (mApkFilePath == null){
-			Log.d(TAG, "debugHook: mApkFilePath = null");
-			//1、从 /data/app/com.lanshifu.xposeddemo-1.apk 找
-			mApkFilePath = String.format("/data/app/%s-%s.apk", mPackageName, 1);
-			if (!new File(mApkFilePath).exists()) {
-				//2、从 /data/app/com.lanshifu.xposeddemo-2.apk 找
-				mApkFilePath = String.format("/data/app/%s-%s.apk", mPackageName, 2);
-				if (!new File(mApkFilePath).exists()) {
-					//3、从 /data/app/com.lanshifu.xposeddemo-1/base.apk 找
-					mApkFilePath = String.format("/data/app/%s-%s/base.apk", mPackageName, 1);
-					if (!new File(mApkFilePath).exists()) {
-						//4、从 /data/app/com.lanshifu.xposeddemo-2/base.apk 找
-						mApkFilePath = String.format("/data/app/%s-%s/base.apk", mPackageName, 2);
-						if (!new File(mApkFilePath).exists()) {
-							LogUtil.e("找不到apk路径，热更新失败:filePath= "+ mApkFilePath + " ,packageName="+ mPackageName);
-							mApkFilePath = null;
+			//通过反射实现热更新
+			final String packageName = MainModule.class.getPackage().getName();
+			String filePath = String.format("/data/app/%s-%s.apk", packageName, 1);
+			if (!new File(filePath).exists()) {
+				filePath = String.format("/data/app/%s-%s.apk", packageName, 2);
+				if (!new File(filePath).exists()) {
+					filePath = String.format("/data/app/%s-%s/base.apk", packageName, 1);
+					if (!new File(filePath).exists()) {
+						filePath = String.format("/data/app/%s-%s/base.apk", packageName, 2);
+						if (!new File(filePath).exists()) {
+							XposedBridge.log("lxb-Error:在/data/app找不到APK文件" + packageName);
 							return;
 						}
 					}
 				}
 			}
-		}
-
-		//通过PathClassLoader 加载apk
-		final PathClassLoader pathClassLoader = new PathClassLoader(mApkFilePath, ClassLoader.getSystemClassLoader());
-		String className = MainModule.class.getName();
-		//通过反射调用 MainModule的 handleLoadPackage 方法【重点】
-		final Class<?> aClass;
-		try {
-			//反射调用MainModule的handleLoadPackage方法
-			aClass = Class.forName(className, true, pathClassLoader);
-			final Method aClassMethod = aClass.getMethod("handleLoadPackage", XC_LoadPackage.LoadPackageParam.class);
+			final PathClassLoader pathClassLoader = new PathClassLoader(filePath, ClassLoader.getSystemClassLoader());
+			final Class<?> aClass = Class.forName(packageName + "." + MainModule.class.getSimpleName(), true, pathClassLoader);
+			final Method aClassMethod = aClass.getMethod("handle", XC_LoadPackage.LoadPackageParam.class);
 			aClassMethod.invoke(aClass.newInstance(), param);
-		} catch (Exception e) {
-			LogUtil.e("反射MainModule 失败："+e.getMessage());
-			e.printStackTrace();
-		}
 
-	}
+			LogUtil.d("pkg:"+param.packageName);
+		}else {
+			Log.d(TAG, "not hot fix - >handleLoadPackage: " + param.packageName);
+			MainModule module = new MainModule();
+            try {
+                module.handleMyHandleLoadPackage(param);
+            } catch (ClassNotFoundException e) {
+                Log.e(TAG, "handleLoadPackage: "+ e.getMessage());
+            }
+        }
 
-	private void releaseHook(final LoadPackageParam param){
-		Log.d(TAG, "not hot load - >handleLoadPackage: " + param.packageName);
-		MainModule module = new MainModule();
-		module.handleLoadPackage(param);
+
 
 	}
 
